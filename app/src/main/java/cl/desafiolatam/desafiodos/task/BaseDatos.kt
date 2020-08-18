@@ -9,22 +9,23 @@ import androidx.room.RoomDatabase
 import java.security.AccessControlContext
 
 @Database(entities = [Task::class], version = 1, exportSchema = false)
-abstract class TaskRoomDatabase : RoomDatabase() {
+abstract class TaskRoomDatabase : RoomDatabase(), TaskDao {
 
     abstract fun taskDao(): TaskDao
 
     companion object {
-        // singleton
+        // singleton --> previene que varias instancias operen en la base de datos al mismo tiempo
 
-
+        //la base de datos puede ser nula, si no tiene informacion
         @Volatile
         private var INSTANCE: TaskRoomDatabase? = null
-
-        fun getDatabase(context: Context): TaskRoomDatabase? {
-            if (INSTANCE != null) {
-                return INSTANCE
+        fun getDatabase(context: Context): TaskRoomDatabase {
+            val tempInstance = INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
             }
 
+            //si es nula, construye la instancia y la retorna
             synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

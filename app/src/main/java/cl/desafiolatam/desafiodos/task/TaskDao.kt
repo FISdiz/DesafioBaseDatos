@@ -17,7 +17,7 @@ interface TaskDao {
     fun findByTask(tarea: String): Task
 
     @Insert
-    fun insert(vararg tareas: Task)
+    fun insert(vararg tarea: Task)
 
     @Delete
     fun delete(tarea: Task)

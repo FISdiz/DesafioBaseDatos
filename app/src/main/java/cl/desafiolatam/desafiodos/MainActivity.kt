@@ -10,11 +10,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cl.desafiolatam.desafiodos.task.OnItemClickListener
-import cl.desafiolatam.desafiodos.task.TaskListAdapter
-import cl.desafiolatam.desafiodos.task.TaskUIDataHolder
+import cl.desafiolatam.desafiodos.task.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_task.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), OnItemClickListener {
     override fun onItemClick(taskItem: TaskUIDataHolder) {
@@ -37,6 +38,9 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var list: RecyclerView
     private lateinit var adapter: TaskListAdapter
     // crear las variables para utilizar la base de datos
+    private lateinit var taskDao : TaskDao
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         setSupportActionBar(toolbar)
         setUpViews()
         //inicializar lo necesario para usar la base de datos
+        taskDao = TaskRoomDatabase.getDatabase(application).taskDao()
     }
 
     override fun onResume() {
@@ -115,6 +120,9 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     }
     private fun createEntity(text:String) {
         //completar este método para retornar un Entity
+        CoroutineScope(Dispatchers.Main).launch {
+        taskDao.insert(Task("Estudiar"))
+        }
     }
 
     private fun createEntityListFromDatabase(/* párametro de entrada*/): MutableList<TaskUIDataHolder> {
